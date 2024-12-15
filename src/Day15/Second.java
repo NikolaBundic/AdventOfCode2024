@@ -6,16 +6,13 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 
-//Works on examples but not on inputFile
-//Will try to find edge case later
-//There is like 10 boxes that get messed up and I don't know what to do anymore
 public class Second {
     public static void main(String[] args) throws IOException {
         ArrayList<ArrayList<Character>> matrix = new ArrayList<>();
         ArrayList<Character> move = new ArrayList<>();
         boolean area = true;
 
-        Reader in = new FileReader("src/Day15/inputFileSmall.txt");
+        Reader in = new FileReader("src/Day15/inputFile.txt");
         BufferedReader br = new BufferedReader(in);
         String line;
         while ((line = br.readLine()) != null) {
@@ -53,17 +50,21 @@ public class Second {
             ArrayList<Integer> checked = new ArrayList<>();
             ArrayList<ArrayList<Integer>> forMove = new ArrayList<>();
 
-            while (matrix.get(pos[1]).get(pos[0]) != '#') {
+            while (pos[1] != 0 && pos[0] != 0 && pos[1] != matrix.size() && pos[0] != matrix.getFirst().size()) {
                 if(c == '<' || c == '>') {
-                    if (matrix.get(pos[1]).get(pos[0]) != '.') {
-                        pos[0] += dir[0];
-                    } else {
-                        while (matrix.get(pos[1] - dir[1]).get(pos[0] - dir[0]) != '@') {
-                            swapElements(matrix, pos[1], pos[0], pos[1] - dir[1], pos[0] - dir[0]);
+                    if(matrix.get(pos[1]).get(pos[0]) != '#'){
+                        if (matrix.get(pos[1]).get(pos[0]) != '.') {
+                            pos[0] += dir[0];
+                        } else {
+                            while (matrix.get(pos[1] - dir[1]).get(pos[0] - dir[0]) != '@') {
+                                swapElements(matrix, pos[1], pos[0], pos[1] - dir[1], pos[0] - dir[0]);
 
-                            pos[0] -= dir[0];
+                                pos[0] -= dir[0];
+                            }
+                            swapElements(matrix, pos[1], pos[0], pos[1] - dir[1], pos[0] - dir[0]);
+                            break;
                         }
-                        swapElements(matrix, pos[1], pos[0], pos[1] - dir[1], pos[0] - dir[0]);
+                    }else{
                         break;
                     }
                 }else if(c == '^' || c == 'v') {
@@ -113,6 +114,8 @@ public class Second {
                     for(Integer i : temp) {
                         if(!check.contains(i)) {
                             check.add(i);
+                        }else{
+                            checked.remove(i);
                         }
                     }
 
@@ -153,9 +156,6 @@ public class Second {
             }
         }
 
-        for(ArrayList<Character> row : matrix) {
-            System.out.println(row);
-        }
         System.out.println(solution);
 
         in.close();
